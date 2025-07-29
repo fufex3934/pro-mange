@@ -15,7 +15,7 @@ export class AuthService {
     return this.userService.create({ email, password: hashedPassword });
   }
 
-  async validateUser(email: string, password: string): Promise<User> {
+  async validateUser(email: string, password: string): Promise<UserDocument> {
     const user = await this.userService.findByEmail(email);
     if (!user) throw new UnauthorizedException('Invalid Credentials');
     const isValid = await bcrypt.compare(password, user.password);
