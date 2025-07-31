@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Project, ProjectDocument } from './schemas/project.schema';
 import { DeleteResult, Model } from 'mongoose';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UserDocument } from '../users/schemas/user.schema';
+import { UserDocument, UserRole } from '../users/schemas/user.schema';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Injectable()
@@ -30,8 +30,11 @@ export class ProjectsService {
   async findOne(id: string, user: UserDocument): Promise<ProjectDocument> {
     const project = await this.ProjectModel.findById(id);
     if (!project) throw new NotFoundException('Project not found');
-    if (!project.owner.equals(user._id))
-      throw new ForbiddenException('You are not the owner of this project');
+    const isOwner = project.owner.equals(user._id);
+    const isAdmin = user.role === UserRole.ADMIN;
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException('You can only delete your own project');
+    }
     return project;
   }
 
