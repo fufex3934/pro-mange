@@ -33,7 +33,7 @@ export class ProjectsService {
     const isOwner = project.owner.equals(user._id);
     const isAdmin = user.role === UserRole.ADMIN;
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('You can only delete your own project');
+      throw new ForbiddenException('You can only access your own project');
     }
     return project;
   }
@@ -42,10 +42,11 @@ export class ProjectsService {
     id: string,
     updateProjectDto: UpdateProjectDto,
     user: UserDocument,
-  ): Promise<ProjectDocument> {
+  ): Promise<ProjectDocument | null> {
     const project = await this.findOne(id, user);
     Object.assign(project, updateProjectDto);
-    return project.save();
+    await project.save();
+    return this.ProjectModel.findById(project._id).lean();
   }
 
   async remove(id: string, user: UserDocument): Promise<DeleteResult> {

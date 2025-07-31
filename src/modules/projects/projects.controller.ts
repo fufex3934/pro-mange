@@ -29,6 +29,7 @@ export class ProjectsController {
     @Body() createProjetDto: CreateProjectDto,
     @CurrentUser() user: UserDocument,
   ) {
+    console.log('Logged in user:', user);
     return await this.projectsService.create(createProjetDto, user);
   }
 
@@ -42,10 +43,11 @@ export class ProjectsController {
     return await this.projectsService.findOne(id, user);
   }
 
+  @Roles(UserRole.USER, UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    updateProjectDto: UpdateProjectDto,
+    @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: UserDocument,
   ) {
     return await this.projectsService.update(id, updateProjectDto, user);
