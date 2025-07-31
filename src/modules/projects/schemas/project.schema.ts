@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
 export type ProjectsDocument = HydratedDocument<Projects>;
@@ -14,3 +14,5 @@ export class Projects {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner: Types.ObjectId;
 }
+
+export const ProjectsSchema = SchemaFactory.createForClass(Projects);
