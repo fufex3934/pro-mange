@@ -13,6 +13,9 @@ export class Project {
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner: Types.ObjectId;
+
+  @Prop()
+  coverImageUrl?: string;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);
