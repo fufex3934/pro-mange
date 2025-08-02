@@ -56,11 +56,11 @@ export class TasksService {
     return task;
   }
 
-  async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
+  async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task | null> {
     const task = await this.findOne(id);
     Object.assign(task, updateTaskDto);
     await task.save();
-    return task;
+    return this.taskModel.findById(task._id);
   }
 
   async remove(id: string) {

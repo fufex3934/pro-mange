@@ -53,4 +53,11 @@ export class ProjectsService {
     const project = await this.findOne(id, user);
     return project.deleteOne();
   }
+
+  async uploadCover(id: string, filename: string, user: UserDocument) {
+    const project = await this.findOne(id, user);
+    project.coverImageUrl = `/uploads/${filename}`;
+    await project.save();
+    return this.ProjectModel.findById(project._id);
+  }
 }

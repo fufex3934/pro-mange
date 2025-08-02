@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -17,6 +19,8 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { DeleteResult } from 'mongoose';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/common/utils/storage';
 
 @Controller('projects')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -59,5 +63,15 @@ export class ProjectsController {
     @CurrentUser() user: UserDocument,
   ): Promise<DeleteResult> {
     return await this.projectsService.remove(id, user);
+  }
+
+  @Post('upload-cover/:id')
+  @UseInterceptors(FileInterceptor('file', multerConfig))
+  async uploadCover(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return await this.projectsService.uploadCover(id, file.filename, user);
   }
 }
