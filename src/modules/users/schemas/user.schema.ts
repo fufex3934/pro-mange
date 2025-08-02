@@ -18,6 +18,12 @@ export class User {
 
   @Prop({ enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @Prop({ default: false })
+  isEmailVerified: boolean;
+
+  @Prop()
+  emailVerificationToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
